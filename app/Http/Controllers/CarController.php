@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Car;
@@ -10,12 +10,12 @@ class CarController extends Controller
     public function index()
     {
         $cars = Car::all();
-        return view('admin.cars.index', compact('cars'));
+        return view('cars.index', compact('cars'));
     }
 
     public function create()
     {
-        return view('admin.cars.create');
+        return view('cars.create');
     }
 
     public function store(Request $request)
@@ -26,17 +26,17 @@ class CarController extends Controller
             'year' => 'required|integer',
         ]));
 
-        return redirect()->route('admin.cars.index');
+        return redirect()->route('cars.index');
     }
 
     public function show(Car $car)
     {
-        return view('admin.cars.show', compact('car'));
+        return view('cars.show', compact('car'));
     }
 
     public function edit(Car $car)
     {
-        return view('admin.cars.edit', compact('car'));
+        return view('cars.edit', compact('car'));
     }
 
     public function update(Request $request, Car $car)
@@ -47,12 +47,12 @@ class CarController extends Controller
             'year' => 'required|integer',
         ]));
 
-        return redirect()->route('admin.cars.index');
+        return redirect()->route('cars.index');
     }
 
     public function destroy(Car $car)
     {
         $car->delete();
-        return redirect()->route('admin.cars.index');
+        return redirect()->route('cars.index');
     }
 }

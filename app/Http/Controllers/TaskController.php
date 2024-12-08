@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Task;
@@ -12,13 +12,13 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::with('car')->get();
-        return view('admin.tasks.index', compact('tasks'));
+        return view('tasks.index', compact('tasks'));
     }
 
     public function create()
     {
         $cars = Car::all();
-        return view('admin.tasks.create', compact('cars'));
+        return view('tasks.create', compact('cars'));
     }
 
     public function store(Request $request)
@@ -28,13 +28,13 @@ class TaskController extends Controller
             'description' => 'required|string',
         ]));
 
-        return redirect()->route('admin.tasks.index');
+        return redirect()->route('tasks.index');
     }
 
     public function edit(Task $task)
     {
         $cars = Car::all();
-        return view('admin.tasks.edit', compact('task', 'cars'));
+        return view('tasks.edit', compact('task', 'cars'));
     }
 
     public function update(Request $request, Task $task)
@@ -45,12 +45,12 @@ class TaskController extends Controller
             'status' => 'required|string',
         ]));
 
-        return redirect()->route('admin.tasks.index');
+        return redirect()->route('tasks.index');
     }
 
     public function destroy(Task $task)
     {
         $task->delete();
-        return redirect()->route('admin.tasks.index');
+        return redirect()->route('tasks.index');
     }
 }
