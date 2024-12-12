@@ -1,4 +1,4 @@
-<!-- resources/views/tasks/index.blade.php -->
+<!-- resources/views/tasks/my-tasks.blade.php -->
 @extends('layouts.app')
 
 @section('content')
@@ -7,7 +7,7 @@
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 text-gray-900">
                 <div class="mb-6">
-                    <h2 class="text-2xl font-semibold">Available Tasks</h2>
+                    <h2 class="text-2xl font-semibold">My Tasks</h2>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -17,6 +17,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Car</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned Date</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
@@ -31,22 +32,17 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            @if($task->status === 'pending') bg-yellow-100 text-yellow-800
-                                            @elseif($task->status === 'assigned') bg-blue-100 text-blue-800
+                                            @if($task->status === 'assigned') bg-blue-100 text-blue-800
                                             @else bg-green-100 text-green-800
                                             @endif">
                                             {{ ucfirst($task->status) }}
                                         </span>
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {{ $task->users->first()->pivot->created_at->format('M d, Y H:i') }}
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        @if($task->status === 'pending')
-                                            <form action="{{ route('tasks.assign', $task) }}" method="POST" class="inline">
-                                                @csrf
-                                                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                                    Take Task
-                                                </button>
-                                            </form>
-                                        @elseif($task->status === 'assigned' && $task->users->contains(auth()->id()))
+                                        @if($task->status === 'assigned')
                                             <form action="{{ route('tasks.complete', $task) }}" method="POST" class="inline">
                                                 @csrf
                                                 <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
@@ -62,7 +58,7 @@
 
                     @if($tasks->isEmpty())
                         <div class="text-center py-4 text-gray-500">
-                            No tasks available at the moment.
+                            You haven't taken any tasks yet.
                         </div>
                     @endif
                 </div>

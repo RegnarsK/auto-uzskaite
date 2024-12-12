@@ -11,46 +11,62 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::with('car')->get();
-        return view('tasks.index', compact('tasks'));
+        $tasks = Task::with(['car', 'users'])->latest()->get();
+        return view('admin.tasks.index', compact('tasks'));
     }
 
     public function create()
     {
         $cars = Car::all();
-        return view('tasks.create', compact('cars'));
+        return view('admin.tasks.create', compact('cars'));
     }
 
     public function store(Request $request)
     {
-        Task::create($request->validate([
+        $validated = $request->validate([
             'car_id' => 'required|exists:cars,id',
-            'description' => 'required|string',
-        ]));
+            'description' => 'required|string|max:255',
+        ]);
 
-        return redirect()->route('tasks.index');
+        $validated['status'] = 'pending';
+
+        Task::create($validated);
+
+        return redirect()->route('admin.tasks.index')
+            ->with('success', 'Task created successfully.');
     }
 
     public function edit(Task $task)
     {
         $cars = Car::all();
-        return view('tasks.edit', compact('task', 'cars'));
+        return view('admin.tasks.edit', compact('task', 'cars'));
     }
 
     public function update(Request $request, Task $task)
     {
-        $task->update($request->validate([
+        $validated = $request->validate([
             'car_id' => 'required|exists:cars,id',
-            'description' => 'required|string',
-            'status' => 'required|string',
-        ]));
+            'description' => 'required|string|max:255',
+            'status' => 'required|in:pending,assigned,completed',
+        ]);
 
-        return redirect()->route('tasks.index');
+        $task->update($validated);
+
+        // If the task is marked as completed, update the user_tasks relationship
+        if ($validated['status'] === 'completed' && $task->users()->exists()) {
+            // We don't detach the user, we keep the record for history
+            // but the status will show it's completed
+        }
+
+        return redirect()->route('admin.tasks.index')
+            ->with('success', 'Task updated successfully.');
     }
 
     public function destroy(Task $task)
     {
         $task->delete();
-        return redirect()->route('tasks.index');
+
+        return redirect()->route('admin.tasks.index')
+            ->with('success', 'Task deleted successfully.');
     }
 }

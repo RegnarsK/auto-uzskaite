@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -21,9 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-    ];
-    protected $casts = [
-        'is_admin' => 'boolean',
+        'is_admin',
     ];
 
     /**
@@ -37,19 +34,50 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'is_admin' => 'boolean',
+    ];
+
+    /**
+     * Get the tasks assigned to the user.
+     */
     public function tasks()
-{
-    return $this->belongsToMany(Task::class, 'user_tasks')->withTimestamps();
-}
+    {
+        return $this->belongsToMany(Task::class, 'user_tasks')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin()
+    {
+        return $this->is_admin;
+    }
+
+    /**
+     * Get the active tasks assigned to the user.
+     */
+    public function activeTasks()
+    {
+        return $this->tasks()
+                    ->where('status', 'assigned')
+                    ->withPivot('created_at');
+    }
+
+    /**
+     * Get the completed tasks by the user.
+     */
+    public function completedTasks()
+    {
+        return $this->tasks()
+                    ->where('status', 'completed')
+                    ->withPivot('created_at');
+    }
 }
