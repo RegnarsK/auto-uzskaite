@@ -31,5 +31,6 @@ Route::middleware(['auth'])->group(function () {
 //     Route::get('/cars', [CarController::class, 'index'])->name('cars.index');
 //     Route::get('/tasks', [UserTaskController::class, 'index'])->name('tasks.index');
 // });
+// Route::get('/admin/cars', [CarController::class, 'index'])->name('admin.cars.index');
 
 require __DIR__.'/auth.php';

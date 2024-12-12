@@ -79,10 +79,10 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.cars.index')" :active="request()->routeIs('admin.cars.index')">
+            <x-responsive-nav-link :href="route('cars.index')" :active="request()->routeIs('cars.index')">
                 {{ __('Manage Cars') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.tasks.index')" :active="request()->routeIs('admin.tasks.index')">
+            <x-responsive-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.index')">
                 {{ __('Manage Tasks') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.index')">
